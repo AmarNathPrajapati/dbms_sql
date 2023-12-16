@@ -1,0 +1,63 @@
+USE ORG;
+select FIRST_NAME as worker_name FROM worker;
+select upper(first_name) as name_of_worker from worker;
+select distinct department from worker;
+select department from worker group by(department);
+select substring(first_name,1,4) from worker;
+select instr(first_name,'b') from worker where first_name = 'Amitabh';
+select rtrim(first_name) from worker;
+select ltrim(first_name) from worker;
+select distinct department , length(department) from worker;
+select replace(first_name,'a','A') from worker;
+select concat(first_name,' ',last_name) from worker;
+select * from worker order by first_name;
+select * from worker order by first_name asc, department desc;
+select * from worker where first_name in ('vipul','satish');
+select * from worker where first_name not in ('vipul','satish');
+select * from worker where DEPARTMENT like 'admin%';
+select * from worker where first_name like'%a%';
+select * from worker where first_name like'%a';
+select * from worker where first_name like'_____h';
+select * from worker where salary between 50000 and 100000;
+select count(*) from worker where department = 'admin';
+select  concat(first_name,' ',last_name) as full_name from worker where salary between 50000 and 100000;
+select department , count(department) as count from worker group by department order by count desc;
+select distinct w.* from worker as w inner join title as t  on w.worker_id = t.worker_ref_id where t.worker_title = 'manager';
+select  worker_title, count(worker_title) as c from title group by worker_title;
+select * from worker where mod(worker_id,2)=1;
+select * from worker where mod(worker_id,2)=0;
+create table worker_clone like worker;
+select * from worker_clone;
+insert into worker_clone select * from worker;
+select distinct w.* from worker as w inner join worker_clone as wc using(worker_id);
+select distinct w.* from worker w inner join worker_clone wc where w.worker_id = wc.worker_id;
+select distinct w.* from worker as w left join worker_clone as wc using(worker_id) where wc.worker_id is null;
+select curdate();
+select now();
+select * from worker order by salary desc limit 5;
+select * from worker order by salary desc limit 4,1;
+select * from worker as w1 where 
+5 = (select distinct count(worker_id) from worker as w2
+	where w2.salary >= w1.salary);
+select distinct w1.* from worker as w1 , worker as w2 where w1.worker_id != w2.worker_id and w1.salary = w2.salary;
+select w1.* from worker as w1 where 2 = 
+(select count(salary) from worker as w2 where w2.salary>=w1.salary);
+select max(salary) from worker where salary not in (select max(salary) from worker);
+select * from worker  union all select * from worker order by worker_id ;
+select* from worker where worker_id not in (select w.worker_id from worker w inner join bonus b on w.worker_id = b.worker_ref_id);
+select * from worker where worker_id not in (select worker_ref_id from bonus);
+select * from worker where worker_id<=(select count(worker_id)/2 from worker);
+select department, count(department)as count from worker group by department having count<4;
+select department, count(department)as count from worker group by department;
+select * from worker where worker_id = (select max(worker_id) from worker);
+select * from worker where worker_id = (select min(worker_id) from worker);
+(select * from worker order by worker_id desc limit 5) order by worker_id;
+select w.first_name, w.department, w.salary from (select department, max(salary) as max from worker group by department) temp inner join worker as w on temp.max = w.salary and temp.department = w.department  ;
+select distinct salary from worker order by salary desc limit 3;
+select distinct salary from worker as w1 where 3  >= (
+select count(distinct salary) from worker as w2 where w2.salary>= w1.salary);
+select distinct salary from worker order by salary asc limit 3;
+select distinct salary from worker as w1 where 3  >= (
+select count(distinct salary) from worker as w2 where w2.salary<= w1.salary);
+select department, sum(salary) as sum from  worker group by department;
+select * from worker where salary = (select max(salary) from worker);
